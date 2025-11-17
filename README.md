@@ -31,4 +31,7 @@ Abre una terminal MySQL y ejecuta:
 ```sql
 mysql -u <usuario> -p
 CREATE DATABASE biblioteca;
+USE DATABASE biblioteca;
+SOURCE db/biblioteca.sql;
+
 
