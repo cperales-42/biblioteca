@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Libros</title>
+</head>
+<body>
+<h1>Lista de Libros</h1>
+
+<!-- Botón solo para ADMIN -->
+<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" href="/libros/nuevo">Añadir Libro</a>
+
+<table border="1">
+    <tr>
+        <th>ID</th><th>Título</th><th>Autor</th><th>Disponibles</th><th>Acciones</th>
+    </tr>
+    <tr th:each="libro : ${libros}">
+        <td th:text="${libro.idLibro}"></td>
+        <td th:text="${libro.titulo}"></td>
+        <td th:text="${libro.autor}"></td>
+        <td th:text="${libro.ejemplaresDisponibles}"></td>
+        <td>
+            <!-- Botones solo para ADMIN -->
+            <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <a th:href="@{/libros/editar/{id}(id=${libro.idLibro})}">Editar</a> |
+                <a th:href="@{/libros/eliminar/{id}(id=${libro.idLibro})}">Eliminar</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+<a href="/index">Volver al inicio</a>
+</body>
+</html>

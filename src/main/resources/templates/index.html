@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
+        main { margin-top: 50px; }
+        nav { margin: 50px 0; }
+        footer { position: fixed; bottom: 20px; width: 100%; text-align: center; }
+        a, button { text-decoration: none; margin: 0 15px; font-weight: bold; cursor: pointer; }
+        button { background-color: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Bienvenido a la Biblioteca</h1>
+</main>
+
+<nav>
+    <a th:href="@{/libros}">Libros</a>
+    <a th:href="@{/usuarios}">Usuarios</a>
+    <a th:href="@{/prestamos}">Préstamos</a>
+</nav>
+
+<footer>
+    <!-- Usuario logueado -->
+    <div sec:authorize="isAuthenticated()">
+        Bienvenido, <span sec:authentication="name"></span>!
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+
+    <!-- Usuario no logueado -->
+    <div sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Iniciar sesión</a>
+    </div>
+</footer>
+</body>
+</html>

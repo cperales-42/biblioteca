@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Usuarios</title>
+</head>
+<body>
+<h1>Lista de Usuarios</h1>
+
+<!-- Botón solo para ADMIN -->
+<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" href="/usuarios/nuevo">Añadir Usuario</a>
+
+<table border="1">
+    <tr>
+        <th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th>
+    </tr>
+    <tr th:each="u : ${usuarios}">
+        <td th:text="${u.idUsuario}"></td>
+        <td th:text="${u.nombre}"></td>
+        <td th:text="${u.email}"></td>
+        <td th:text="${u.rol}"></td>
+        <td>
+            <!-- Botones solo para ADMIN -->
+            <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <a th:href="@{/usuarios/editar/{id}(id=${u.idUsuario})}">Editar</a> |
+                <a th:href="@{/usuarios/eliminar/{id}(id=${u.idUsuario})}">Eliminar</a>
+            </span>
+        </td>
+    </tr>
+</table>
+
+<a href="/index">Volver al inicio</a>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+</head>
+<body>
+<h1>Login</h1>
+<form th:action="@{/login}" method="post">
+    Email: <input type="text" name="username" /><br/>
+    Contraseña: <input type="password" name="password" /><br/>
+    <button type="submit">Entrar</button>
+</form>
+
+<!-- Hipervínculo al registro -->
+<p>
+    ¿No tienes cuenta?
+    <a th:href="@{/usuarios/registro}">Regístrate aquí</a>
+</p>
+
+<p th:if="${param.error}">Email o contraseña incorrectos</p>
+<p th:if="${param.logout}">Has cerrado sesión correctamente</p>
+</body>
+</html>
