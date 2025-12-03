@@ -99,9 +99,16 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (4,'Juan','juan@email.com','asdf','ADMIN'),(5,'Maria','maria@email.com','asdf','ADMIN'),(6,'Pedro','pedro@email.com','asdf','ADMIN'),(7,'spopp','spopp@kanjasn.llar','$2a$10$NUNNkXaxbDnKkidbtcxFUeVJxWgpu5D4gmV7UOyztiPGeKltmuB0S','LECTOR'),(9,'Rigoberto','hola@gmail.com','$2a$10$Vs6CI5ndVtBI8VmhjZfRJupVv04FvlHHB5M.vG0Qzv6ds3Iae5nAG','LECTOR'),(10,'admin','admin@email.com','$2b$12$cv8aoQMuBlR2n/gAbRycLeDrRiIFLiELY17f3ZZ8bwRaac/vVBb4y','ADMIN');
+INSERT INTO `usuarios` VALUES
+(4,'Juan','juan@email.com','$2a$10$7uZzFg3R3t4eVQ6uCkKHeuB5kYHsk3O5f0NH8TTkB0DAzWvL3WgIe','ADMIN'),
+(5,'Maria','maria@email.com','$2a$10$7uZzFg3R3t4eVQ6uCkKHeuB5kYHsk3O5f0NH8TTkB0DAzWvL3WgIe','ADMIN'),
+(6,'Pedro','pedro@email.com','$2a$10$7uZzFg3R3t4eVQ6uCkKHeuB5kYHsk3O5f0NH8TTkB0DAzWvL3WgIe','ADMIN'),
+(7,'spopp','spopp@kanjasn.llar','$2a$10$NUNNkXaxbDnKkidbtcxFUeVJxWgpu5D4gmV7UOyztiPGeKltmuB0S','LECTOR'),
+(9,'Rigoberto','hola@gmail.com','$2a$10$Vs6CI5ndVtBI8VmhjZfRJupVv04FvlHHB5M.vG0Qzv6ds3Iae5nAG','LECTOR'),
+(10,'admin','admin@email.com','$2a$10$wPQlLHO/KN9T7coYwnbCxeN/Jh1WZP2E6ZqKZZrpo0XFtKp4G5r0W','ADMIN');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
