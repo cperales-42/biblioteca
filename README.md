@@ -56,4 +56,12 @@ mysql -u <usuario> -p
 CREATE DATABASE biblioteca;
 USE biblioteca;
 SOURCE db/biblioteca.sql;
+```
+### 2. Usar los usuarios de prueba
+Ya en el programa podras hacer login con:
 
+CORREO: admin@email.com (ADMIN)
+PASSWD: admin
+
+CORREO: juan@email.com (LECTOR)
+PASSWD: asdf
