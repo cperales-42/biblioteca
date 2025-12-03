@@ -37,7 +37,7 @@ El proyecto está listo para desplegar y usar como sistema básico de biblioteca
 
 ## Tecnologías usadas
 - Java 17
-- Spring Boot 3.x
+- Spring Boot 3.2.0
 - Spring Security
 - Spring Data JPA
 - Thymeleaf
