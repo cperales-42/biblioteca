@@ -3,9 +3,11 @@ package com.cperales.biblioteca.controlador;
 import com.cperales.biblioteca.modelo.Libro;
 import com.cperales.biblioteca.modelo.Prestamo;
 import com.cperales.biblioteca.modelo.Usuario;
-import com.cperales.biblioteca.servicio.LibroService;
 import com.cperales.biblioteca.servicio.PrestamoService;
 import com.cperales.biblioteca.servicio.UsuarioService;
+import com.cperales.biblioteca.repositorio.LibroRepo;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,45 +20,89 @@ public class PrestamoController {
 
     private final PrestamoService prestamoService;
     private final UsuarioService usuarioService;
-    private final LibroService libroService;
+    private final LibroRepo libroRepo;
 
-    public PrestamoController(PrestamoService prestamoService, UsuarioService usuarioService, LibroService libroService) {
+    public PrestamoController(PrestamoService prestamoService,
+                              UsuarioService usuarioService,
+                              LibroRepo libroRepo) {
         this.prestamoService = prestamoService;
         this.usuarioService = usuarioService;
-        this.libroService = libroService;
+        this.libroRepo = libroRepo;
     }
 
-    // Listar todos los préstamos
+    // Listar préstamos
     @GetMapping
-    public String listarPrestamos(Model model) {
-        List<Prestamo> lista = prestamoService.listarTodos();
-        model.addAttribute("prestamos", lista);
+    public String listarPrestamos(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        Usuario usuarioActual = usuarioService.buscarPorEmail(email);
+
+        List<Prestamo> prestamos;
+
+        if ("ADMIN".equals(usuarioActual.getRol())) {
+            prestamos = prestamoService.listarTodos();
+        } else {
+            prestamos = prestamoService.listarPorUsuario(usuarioActual);
+        }
+
+        model.addAttribute("prestamos", prestamos);
+        model.addAttribute("usuarioActual", usuarioActual);
+
         return "prestamos/lista";
     }
 
-    // Mostrar formulario de nuevo préstamo
-    @GetMapping("/nuevo")
-    public String nuevoPrestamo(Model model) {
-        List<Usuario> usuarios = usuarioService.listarTodos();
-        List<Libro> libros = libroService.listarTodos();
-        model.addAttribute("usuarios", usuarios);
-        model.addAttribute("libros", libros);
-        return "prestamos/form";
+    // Crear préstamo desde un libro
+    @PostMapping("/crear/{idLibro}")
+    public String crearPrestamo(@PathVariable Integer idLibro,
+                                @AuthenticationPrincipal UserDetails userDetails,
+                                Model model) {
+
+        Usuario usuarioActual = usuarioService.buscarPorEmail(userDetails.getUsername());
+
+        try {
+            prestamoService.crearPrestamo(usuarioActual, idLibro);
+            return "redirect:/libros";
+        } catch (RuntimeException e) {
+            return mostrarLibrosConError(model, usuarioActual, e.getMessage());
+        }
     }
 
-    // Guardar préstamo nuevo
-    @PostMapping
-    public String guardarPrestamo(@RequestParam Integer usuarioId, @RequestParam Integer libroId) {
-        Usuario usuarioSeleccionado = usuarioService.obtenerPorId(usuarioId);
-        Libro libroSeleccionado = libroService.obtenerPorId(libroId);
-        prestamoService.prestarLibro(usuarioSeleccionado, libroSeleccionado);
-        return "redirect:/prestamos";
+    // Devolver préstamo
+    @PostMapping("/devolver/{idPrestamo}")
+    public String devolverPrestamo(@PathVariable Integer idPrestamo,
+                                   @AuthenticationPrincipal UserDetails userDetails,
+                                   Model model) {
+
+        Usuario usuarioActual = usuarioService.buscarPorEmail(userDetails.getUsername());
+
+        try {
+            // Verificar que el préstamo pertenece al usuario si no es ADMIN
+            if (!"ADMIN".equals(usuarioActual.getRol())) {
+                List<Prestamo> prestamosUsuario = prestamoService.listarPorUsuario(usuarioActual);
+                boolean perteneceAlUsuario = prestamosUsuario.stream()
+                        .anyMatch(p -> p.getIdPrestamo().equals(idPrestamo));
+
+                if (!perteneceAlUsuario) {
+                    throw new RuntimeException("No puedes devolver un préstamo que no es tuyo.");
+                }
+            }
+
+            prestamoService.devolverPrestamo(idPrestamo);
+            return "redirect:/prestamos";
+
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return listarPrestamos(model, userDetails);
+        }
     }
 
-    // Devolver libro
-    @GetMapping("/devolver/{id}")
-    public String devolverLibro(@PathVariable Integer id) {
-        prestamoService.devolverPrestamo(id);
-        return "redirect:/prestamos";
+    // Método privado para mostrar libros con un mensaje de error
+    private String mostrarLibrosConError(Model model, Usuario usuario, String mensajeError) {
+        List<Libro> todosLosLibros = libroRepo.findAll();
+
+        model.addAttribute("libros", todosLosLibros);
+        model.addAttribute("usuarioActual", usuario);
+        model.addAttribute("error", mensajeError);
+
+        return "libros/lista";
     }
 }

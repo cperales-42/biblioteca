@@ -4,30 +4,103 @@
     <meta charset="UTF-8">
     <title>Registro de Usuario</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; }
-        form { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
-        label { display: block; margin-top: 10px; }
-        input { width: 100%; padding: 8px; margin-top: 5px; }
-        button { margin-top: 15px; padding: 10px 20px; }
-        a { display: block; margin-top: 15px; text-align: center; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .registro-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #333333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            text-align: left;
+            color: #555555;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,123,255,0.2);
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .volver-login {
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+            transition: color 0.3s;
+        }
+
+        .volver-login:hover {
+            color: #0056b3;
+        }
     </style>
 </head>
 <body>
-<h1>Crear Usuario</h1>
+<div class="registro-container">
 
-<form th:action="@{/usuarios/registro}" th:object="${usuario}" method="post">
-    <label for="nombre">Nombre:</label>
-    <input type="text" th:field="*{nombre}" id="nombre" required/>
+    <h1>Crear Usuario</h1>
+    <form th:action="@{/usuarios/registro}" th:object="${usuario}" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" th:field="*{nombre}" id="nombre" required/>
 
-    <label for="email">Email:</label>
-    <input type="email" th:field="*{email}" id="email" required/>
+        <label for="email">Email:</label>
+        <input type="email" th:field="*{email}" id="email" required/>
 
-    <label for="password">Contraseña:</label>
-    <input type="password" th:field="*{password}" id="password" required/>
+        <label for="password">Contraseña:</label>
+        <input type="password" th:field="*{password}" id="password" required/>
 
-    <button type="submit">Registrarse</button>
-</form>
-
-<a th:href="@{/login}">Volver al login</a>
+        <button type="submit">Registrarse</button>
+    </form>
+    <a class="volver-login" th:href="@{/login}">¿Ya tienes cuenta? Inicia sesión</a>
+</div>
 </body>
 </html>

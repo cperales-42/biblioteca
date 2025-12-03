@@ -4,7 +4,6 @@ import com.cperales.biblioteca.modelo.Libro;
 import com.cperales.biblioteca.repositorio.LibroRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,47 +15,58 @@ public class LibroService {
         this.repo = repo;
     }
 
-    // Listar todos los libros
+    // Listar todos los libros disponibles
     public List<Libro> listarTodos() {
-        List<Libro> todos = repo.findAll();
-        List<Libro> resultado = new ArrayList<>();
-        int i = 0;
-        // Usamos while en vez de for para cumplir tu manía
-        while (i < todos.size()) {
-            resultado.add(todos.get(i));
-            i++;
-        }
-        return resultado;
+        return repo.findAll();
     }
 
-    // Obtener libro por ID
+    // Buscar libros por título (contiene, case insensitive)
+    public List<Libro> buscarPorTitulo(String titulo) {
+        return repo.findByTituloContainingIgnoreCase(titulo);
+    }
+
+    // Buscar libros por autor (contiene, case insensitive)
+    public List<Libro> buscarPorAutor(String autor) {
+        return repo.findByAutorContainingIgnoreCase(autor);
+    }
+
+    // Buscar libros por título y autor al mismo tiempo
+    public List<Libro> buscarPorTituloYAutor(String titulo, String autor) {
+        String t = titulo != null ? titulo : "";
+        String a = autor != null ? autor : "";
+        return repo.findByTituloContainingIgnoreCaseAndAutorContainingIgnoreCase(t, a);
+    }
+
+    // Obtener un libro por su ID
     public Libro obtenerPorId(Integer id) {
         return repo.findById(id).orElse(null);
     }
 
-    // Guardar libro (crear o editar)
+    // Guardar un libro nuevo
     public Libro guardar(Libro libro) {
-        if (libro.getIdLibro() == null) {
-            // Nuevo libro: control básico de ejemplares
-            if (libro.getEjemplaresTotales() == null || libro.getEjemplaresTotales() <= 0) {
-                libro.setEjemplaresTotales(1);
-            }
-            libro.setEjemplaresDisponibles(libro.getEjemplaresTotales());
-        } else {
-            // Editar libro: ajusto los ejemplares disponibles
-            Libro original = repo.findById(libro.getIdLibro()).orElse(null);
-            if (original != null) {
-                int delta = libro.getEjemplaresTotales() - original.getEjemplaresTotales();
-                libro.setEjemplaresDisponibles(original.getEjemplaresDisponibles() + delta);
-                if (libro.getEjemplaresDisponibles() < 0) {
-                    libro.setEjemplaresDisponibles(0);
-                }
-            }
-        }
+        // Asegurarnos de que ejemplaresDisponibles se ajuste automáticamente
+        libro.setEjemplaresTotales(libro.getEjemplaresTotales());
         return repo.save(libro);
     }
 
-    // Eliminar libro
+    // Actualizar un libro existente
+    public Libro actualizar(Libro libroActualizado) {
+        Libro libroBD = repo.findById(libroActualizado.getIdLibro())
+                .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+
+        // Solo cambiamos los totales, el setter ajusta disponibles automáticamente
+        libroBD.setEjemplaresTotales(libroActualizado.getEjemplaresTotales());
+
+        // Actualizamos el resto de campos
+        libroBD.setTitulo(libroActualizado.getTitulo());
+        libroBD.setAutor(libroActualizado.getAutor());
+        libroBD.setEditorial(libroActualizado.getEditorial());
+        libroBD.setAnioPublicacion(libroActualizado.getAnioPublicacion());
+
+        return repo.save(libroBD);
+    }
+
+    // Eliminar un libro por ID
     public void eliminar(Integer id) {
         repo.deleteById(id);
     }

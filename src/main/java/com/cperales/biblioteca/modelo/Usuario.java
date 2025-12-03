@@ -22,7 +22,7 @@ public class Usuario {
     // Constructor vacío requerido por JPA
     public Usuario() {}
 
-    // Constructor opcional para crear usuarios rápidamente
+    // Constructor para crear usuarios rápidamente
     public Usuario(String nombre, String email, String password, String rol) {
         this.nombre = nombre;
         this.email = email;
@@ -31,18 +31,43 @@ public class Usuario {
     }
 
     // Getters y setters
-    public Integer getIdUsuario() { return idUsuario; }
-    public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getRol() { return rol; }
-    public void setRol(String rol) { this.rol = rol; }
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
 }

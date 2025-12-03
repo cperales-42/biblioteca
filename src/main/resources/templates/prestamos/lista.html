@@ -2,35 +2,111 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Préstamos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #d1ecf1;
+        }
+
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2ecc71;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #2980b9;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+
 <h1>Lista de Préstamos</h1>
 
-<!-- Botón solo para ADMIN -->
-<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" href="/prestamos/nuevo">Nuevo Préstamo</a>
+<!-- Mostrar mensaje de error si existe -->
+<div th:if="${error}" class="error">
+    <p th:text="${error}"></p>
+</div>
 
-<table border="1">
+<table>
     <tr>
-        <th>ID</th><th>Usuario</th><th>Libro</th><th>Fecha Préstamo</th><th>Fecha Devolución</th><th>Acciones</th>
+        <th>ID</th>
+        <th>Libro</th>
+        <th>Fecha Préstamo</th>
+        <th>Fecha Devolución</th>
+        <th th:if="${usuarioActual.rol == 'ADMIN'}">Usuario</th>
+        <th>Acciones</th>
     </tr>
-    <tr th:each="p : ${prestamos}">
-        <td th:text="${p.idPrestamo}"></td>
-        <td th:text="${p.usuario.nombre}"></td>
-        <td th:text="${p.libro.titulo}"></td>
-        <td th:text="${p.fechaPrestamo}"></td>
-        <td th:text="${p.fechaDevolucion}"></td>
+    <tr th:each="prestamo : ${prestamos}">
+        <td th:text="${prestamo.idPrestamo}"></td>
+        <td th:text="${prestamo.libro.titulo}"></td>
+        <td th:text="${prestamo.fechaPrestamo}"></td>
+        <td th:text="${prestamo.fechaDevolucion}"></td>
+        <td th:if="${usuarioActual.rol == 'ADMIN'}" th:text="${prestamo.usuario.nombre}"></td>
         <td>
-            <!-- LECTOR solo puede devolver si es su préstamo -->
-            <a th:if="${#authorization.expression('hasRole(''LECTOR'')') and p.usuario.email == #authentication.name and p.fechaDevolucion == null}"
-               th:href="@{/prestamos/devolver/{id}(id=${p.idPrestamo})}">Devolver</a>
-
-            <!-- ADMIN puede devolver cualquier préstamo -->
-            <a th:if="${#authorization.expression('hasRole(''ADMIN'')') and p.fechaDevolucion == null}"
-               th:href="@{/prestamos/devolver/{id}(id=${p.idPrestamo})}">Devolver</a>
+            <form th:if="${prestamo.fechaDevolucion == null}"
+                  th:action="@{'/prestamos/devolver/' + ${prestamo.idPrestamo}}" method="post">
+                <button type="submit">Devolver</button>
+            </form>
+            <span th:if="${prestamo.fechaDevolucion != null}">Devuelto</span>
         </td>
     </tr>
 </table>
-
-<a href="/index">Volver al inicio</a>
+<a href="/">Volver al inicio</a>
 </body>
 </html>

@@ -2,74 +2,97 @@ package com.cperales.biblioteca.controlador;
 
 import com.cperales.biblioteca.modelo.Usuario;
 import com.cperales.biblioteca.servicio.UsuarioService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder) {
+    public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    // Listar todos los usuarios (solo ADMIN)
+    // Listar todos los usuarios
     @GetMapping
     public String listarUsuarios(Model model) {
-        model.addAttribute("usuarios", usuarioService.listarTodos());
+        List<Usuario> listaUsuarios = usuarioService.listarTodos();
+        model.addAttribute("usuarios", listaUsuarios);
         return "usuarios/lista";
     }
 
-    // Formulario de creación de usuario (ADMIN)
-    @GetMapping("/nuevo")
-    public String nuevoUsuario(Model model) {
-        model.addAttribute("usuario", new Usuario());
-        return "usuarios/form";
+    // Mostrar formulario para editar usuario existente
+    @GetMapping("/editar/{id}")
+    public String editarUsuarioForm(@PathVariable Integer id, Model model) {
+        Usuario usuario = usuarioService.obtenerPorId(id);
+        if (usuario == null) {
+            return "redirect:/usuarios";
+        }
+        model.addAttribute("usuario", usuario);
+        return "usuarios/editar";
     }
 
-    // Guardar usuario nuevo o editado
-    @PostMapping
-    public String guardarUsuario(@ModelAttribute Usuario usuario) {
-        // codificamos la contraseña antes de guardar
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        usuarioService.guardar(usuario);
+    // Guardar cambios del usuario editado
+    @PostMapping("/editar/{id}")
+    public String guardarUsuarioEditado(@PathVariable Integer id,
+                                        @ModelAttribute Usuario usuarioForm) {
+
+        Usuario usuarioExistente = usuarioService.obtenerPorId(id);
+        if (usuarioExistente == null) {
+            return "redirect:/usuarios";
+        }
+
+        // Actualizar campos básicos
+        usuarioExistente.setNombre(usuarioForm.getNombre());
+        usuarioExistente.setEmail(usuarioForm.getEmail());
+        usuarioExistente.setRol(usuarioForm.getRol());
+
+        // Solo actualizar contraseña si se ingresa
+        String nuevaPassword = usuarioForm.getPassword();
+        if (nuevaPassword != null && !nuevaPassword.isBlank()) {
+            usuarioExistente.setPassword(nuevaPassword);
+        }
+
+        usuarioService.actualizar(usuarioExistente);
         return "redirect:/usuarios";
     }
 
-    // Formulario de edición de usuario (ADMIN)
-    @GetMapping("/editar/{id}")
-    public String editarUsuario(@PathVariable Integer id, Model model) {
-        model.addAttribute("usuario", usuarioService.obtenerPorId(id));
-        return "usuarios/form";
-    }
-
-    // Eliminar usuario (ADMIN)
+    // Eliminar usuario por ID
     @GetMapping("/eliminar/{id}")
     public String eliminarUsuario(@PathVariable Integer id) {
         usuarioService.eliminar(id);
         return "redirect:/usuarios";
     }
 
-    // --- Registro público (LECTOR) ---
+    // Mostrar index con usuario autenticado
+    @GetMapping("/")
+    public String index(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            Usuario usuarioActual = usuarioService.buscarPorEmail(userDetails.getUsername());
+            model.addAttribute("usuarioActual", usuarioActual);
+        }
+        return "index";
+    }
 
+    // Mostrar formulario de registro
     @GetMapping("/registro")
     public String mostrarFormularioRegistro(Model model) {
-        model.addAttribute("usuario", new Usuario());
+        Usuario usuarioNuevo = new Usuario();
+        model.addAttribute("usuario", usuarioNuevo);
         return "usuarios/registro";
     }
 
+    // Procesar el registro de un nuevo usuario
     @PostMapping("/registro")
-    public String registrarUsuario(@ModelAttribute("usuario") Usuario usuario) {
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        usuario.setRol("LECTOR"); // asignamos rol por defecto
+    public String procesarRegistro(@ModelAttribute Usuario usuario) {
         usuarioService.guardar(usuario);
-        return "redirect:/login"; // redirigimos al login después de registrarse
+        return "redirect:/login";
     }
-
 }

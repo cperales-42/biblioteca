@@ -22,7 +22,7 @@ public class Prestamo {
     @JoinColumn(name = "id_libro")
     private Libro libro;
 
-    // Constructor vacío para JPA
+    // Constructor vacío necesario para JPA
     public Prestamo() {}
 
     // Constructor principal
@@ -30,23 +30,47 @@ public class Prestamo {
         this.fechaPrestamo = fechaPrestamo;
         this.usuario = usuario;
         this.libro = libro;
-        this.fechaDevolucion = null; // Al inicio no hay devolución
+        this.fechaDevolucion = null; // Inicialmente no hay devolución
     }
 
     // Getters y setters
-    public Integer getIdPrestamo() { return idPrestamo; }
-    public void setIdPrestamo(Integer idPrestamo) { this.idPrestamo = idPrestamo; }
+    public Integer getIdPrestamo() {
+        return idPrestamo;
+    }
 
-    public LocalDate getFechaPrestamo() { return fechaPrestamo; }
-    public void setFechaPrestamo(LocalDate fechaPrestamo) { this.fechaPrestamo = fechaPrestamo; }
+    public void setIdPrestamo(Integer idPrestamo) {
+        this.idPrestamo = idPrestamo;
+    }
 
-    public LocalDate getFechaDevolucion() { return fechaDevolucion; }
-    public void setFechaDevolucion(LocalDate fechaDevolucion) { this.fechaDevolucion = fechaDevolucion; }
+    public LocalDate getFechaPrestamo() {
+        return fechaPrestamo;
+    }
 
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    public void setFechaPrestamo(LocalDate fechaPrestamo) {
+        this.fechaPrestamo = fechaPrestamo;
+    }
 
-    public Libro getLibro() { return libro; }
-    public void setLibro(Libro libro) { this.libro = libro; }
+    public LocalDate getFechaDevolucion() {
+        return fechaDevolucion;
+    }
 
+    public void setFechaDevolucion(LocalDate fechaDevolucion) {
+        this.fechaDevolucion = fechaDevolucion;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Libro getLibro() {
+        return libro;
+    }
+
+    public void setLibro(Libro libro) {
+        this.libro = libro;
+    }
 }

@@ -1,33 +1,153 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Libros</title>
+    <meta charset="UTF-8">
+    <title>Lista de Libros</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f8; }
+        h1 { color: #333; }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover { background-color: #f1f1f1; }
+
+        form.inline { display: inline; }
+
+        input {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 120px;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #218838; }
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-container input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .form-container button {
+            background-color: #007bff;
+        }
+
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+        .btn-verde {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-rojo {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
 </head>
 <body>
+
+<!-- Botón volver al inicio -->
+<a href="/" style="display:inline-block; margin-bottom:20px; padding:8px 16px; background:#007bff; color:white; border-radius:6px; text-decoration:none; transition:0.3s;">
+    ← Volver al inicio
+</a>
+
 <h1>Lista de Libros</h1>
 
-<!-- Botón solo para ADMIN -->
-<a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" href="/libros/nuevo">Añadir Libro</a>
+<!-- Formulario añadir libro -->
+<div th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'ADMIN'}" class="form-container">
+    <h3>Añadir Nuevo Libro</h3>
+    <form th:action="@{/libros/crear}" method="post">
+        <input type="text" name="titulo" placeholder="Título" required/>
+        <input type="text" name="autor" placeholder="Autor" required/>
+        <input type="text" name="editorial" placeholder="Editorial" required/>
+        <input type="number" name="anioPublicacion" placeholder="Año" required/>
+        <input type="number" name="ejemplaresTotales" placeholder="Ejemplares Totales" required/>
+        <button type="submit">Añadir Libro</button>
+    </form>
+</div>
 
-<table border="1">
+<!-- Tabla de libros -->
+<table>
+    <thead>
     <tr>
-        <th>ID</th><th>Título</th><th>Autor</th><th>Disponibles</th><th>Acciones</th>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Editorial</th>
+        <th>Año</th>
+        <th>Totales</th>
+        <th>Disponibles</th>
+        <th th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'ADMIN'}">Modificar</th>
+        <th th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'LECTOR'}">Acción</th>
     </tr>
+    </thead>
+    <tbody>
     <tr th:each="libro : ${libros}">
         <td th:text="${libro.idLibro}"></td>
         <td th:text="${libro.titulo}"></td>
         <td th:text="${libro.autor}"></td>
+        <td th:text="${libro.editorial}"></td>
+        <td th:text="${libro.anioPublicacion}"></td>
+        <td th:text="${libro.ejemplaresTotales}"></td>
         <td th:text="${libro.ejemplaresDisponibles}"></td>
-        <td>
-            <!-- Botones solo para ADMIN -->
-            <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-                <a th:href="@{/libros/editar/{id}(id=${libro.idLibro})}">Editar</a> |
-                <a th:href="@{/libros/eliminar/{id}(id=${libro.idLibro})}">Eliminar</a>
-            </span>
+
+        <!-- ADMIN: Modificar totales -->
+        <td th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'ADMIN'}">
+            <form th:action="@{/libros/actualizar/{id}(id=${libro.idLibro})}" method="post" class="inline">
+                <input type="number" name="ejemplaresTotales" th:value="${libro.ejemplaresTotales}" min="1"/>
+                <button type="submit">Actualizar</button>
+            </form>
+        </td>
+
+        <!-- LECTOR: Pedir prestado -->
+        <td th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'LECTOR'}">
+            <form th:action="@{/prestamos/crear/{id}(id=${libro.idLibro})}" method="post" class="inline">
+                <button type="submit"
+                        th:disabled="${tienePrestamoActivo || libro.ejemplaresDisponibles == 0}"
+                        th:text="${tienePrestamoActivo ? 'Préstamo activo' : 'Pedir prestado'}"
+                        th:class="${tienePrestamoActivo || libro.ejemplaresDisponibles == 0 ? 'btn-rojo' : 'btn-verde'}">
+                </button>
+            </form>
         </td>
     </tr>
+    </tbody>
 </table>
-
-<a href="/index">Volver al inicio</a>
 </body>
 </html>

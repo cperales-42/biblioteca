@@ -18,69 +18,60 @@ public class SecurityConfig {
         this.usuarioService = usuarioService;
     }
 
-    // Encriptador de contraseñas
+    // Bean para encriptar contraseñas
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Proveedor de autenticación basado en el servicio de usuarios
+    // Proveedor de autenticación usando nuestro UserDetailsService
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider prov = new DaoAuthenticationProvider();
-
-        // Configuración manual para que no quede acoplado en el constructor
-        prov.setUserDetailsService(usuarioService);
-        prov.setPasswordEncoder(passwordEncoder());
-
-        return prov;
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(usuarioService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
-    // Configuración central del sistema de seguridad
+    // Configuración de seguridad web
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // Se prepara la parte de autorización
-        http.authorizeHttpRequests(cfg -> {
-            /*
-             * Permitir acceso libre a las rutas públicas
-             */
-            cfg.requestMatchers("/", "/login", "/usuarios/registro",
-                            "/css/**", "/js/**")
-                    .permitAll();
+        // Configuramos qué URLs puede ver cada rol
+        http.authorizeHttpRequests(auth -> auth
+                // URLs públicas
+                .requestMatchers("/", "/login", "/usuarios/registro",
+                        "/css/**", "/js/**", "/images/**").permitAll()
+                // URLs de libros y préstamos para lectores y admins
+                .requestMatchers("/libros/**", "/prestamos/**").hasAnyRole("ADMIN", "LECTOR")
+                // URLs de usuarios solo para admins
+                .requestMatchers("/usuarios/**").hasRole("ADMIN")
+                // cualquier otra URL requiere estar autenticado
+                .anyRequest().authenticated()
+        );
 
-            /*
-             * Áreas accesibles para lectores y administradores
-             */
-            cfg.requestMatchers("/libros/**", "/prestamos/**")
-                    .hasAnyRole("ADMIN", "LECTOR");
+        // Configuración del login
+        http.formLogin(form -> form
+                .loginPage("/login")          // template login.html
+                .loginProcessingUrl("/login") // acción del form
+                .defaultSuccessUrl("/", true) // a dónde ir al logearse correctamente
+                .permitAll()
+        );
 
-            /*
-             * Gestión de usuarios reservada al administrador
-             */
-            cfg.requestMatchers("/usuarios/**")
-                    .hasRole("ADMIN");
+        // Configuración del logout
+        http.logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+        );
 
-            /*
-             * Todo lo demás requiere estar autenticado
-             */
-            cfg.anyRequest()
-                    .authenticated();
-        });
+        // Manejo de acceso denegado
+        http.exceptionHandling(ex -> ex
+                .accessDeniedPage("/error")
+        );
 
-        // Configuración del inicio de sesión
-        http.formLogin(form -> {
-            form.loginPage("/login");
-            form.defaultSuccessUrl("/", true);
-            form.permitAll();
-        });
-
-        // Configuración del cierre de sesión
-        http.logout(out -> {
-            out.logoutUrl("/logout");
-            out.logoutSuccessUrl("/login?logout");
-            out.permitAll();
-        });
+        // Asociamos nuestro proveedor de autenticación
+        http.authenticationProvider(daoAuthenticationProvider());
 
         return http.build();
     }

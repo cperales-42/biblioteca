@@ -1,8 +1,8 @@
 package com.cperales.biblioteca.servicio;
 
 import com.cperales.biblioteca.modelo.Usuario;
+import com.cperales.biblioteca.UsuarioPrincipal;
 import com.cperales.biblioteca.repositorio.UsuarioRepo;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,53 +20,68 @@ public class UsuarioService implements UserDetailsService {
         this.repo = repo;
     }
 
-    // Para Spring Security
+    /**
+     * Spring Security necesita este método para autenticar al usuario
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Usuario usuario = repo.findByEmail(email);
-        if (usuario == null) throw new UsernameNotFoundException("Usuario no encontrado");
-        return User.builder()
-                .username(usuario.getEmail())
-                .password(usuario.getPassword())
-                .roles(usuario.getRol())
-                .build();
-    }
 
-    // Listar todos los usuarios
-    public List<Usuario> listarTodos() {
-        List<Usuario> todos = repo.findAll();
-        List<Usuario> copia = new ArrayList<>();
-        int i = 0;
-        while (i < todos.size()) {
-            copia.add(todos.get(i));
-            i++;
+        if (usuario == null) {
+            throw new UsernameNotFoundException("Usuario no encontrado con email: " + email);
         }
-        return copia;
+
+        return new UsuarioPrincipal(usuario);
     }
 
-    // Obtener usuario por ID
+    /**
+     * Devuelve todos los usuarios en una lista nueva
+     */
+    public List<Usuario> listarTodos() {
+        List<Usuario> usuarios = repo.findAll();
+        return new ArrayList<>(usuarios); // devolvemos copia para no exponer la lista original
+    }
+
+    /**
+     * Buscar usuario por ID
+     */
     public Usuario obtenerPorId(Integer id) {
         return repo.findById(id).orElse(null);
     }
 
-    // Guardar usuario
-    public Usuario guardar(Usuario u) {
-        return repo.save(u);
+    /**
+     * Buscar usuario por email
+     */
+    public Usuario buscarPorEmail(String email) {
+        return repo.findByEmail(email);
     }
 
-    // Actualizar usuario
-    public Usuario actualizar(Usuario u) {
-        Usuario existente = repo.findById(u.getIdUsuario()).orElse(null);
-        if (existente == null) throw new RuntimeException("Usuario no encontrado");
+    /**
+     * Guardar un nuevo usuario
+     */
+    public Usuario guardar(Usuario usuario) {
+        return repo.save(usuario);
+    }
 
-        existente.setNombre(u.getNombre());
-        existente.setEmail(u.getEmail());
-        existente.setPassword(u.getPassword());
-        existente.setRol(u.getRol());
+    /**
+     * Actualizar un usuario existente
+     */
+    public Usuario actualizar(Usuario usuario) {
+        Usuario existente = repo.findById(usuario.getIdUsuario())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Actualizamos campos manualmente
+        existente.setNombre(usuario.getNombre());
+        existente.setEmail(usuario.getEmail());
+        existente.setPassword(usuario.getPassword());
+        existente.setRol(usuario.getRol());
+
         return repo.save(existente);
     }
 
-    // Eliminar usuario
+    /**
+     * Eliminar usuario por ID
+     */
     public void eliminar(Integer id) {
         repo.deleteById(id);
     }

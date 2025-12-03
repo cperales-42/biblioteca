@@ -1,7 +1,6 @@
 package com.cperales.biblioteca.modelo;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "libros")
@@ -18,50 +17,86 @@ public class Libro {
     private Integer ejemplaresTotales;
     private Integer ejemplaresDisponibles;
 
-    @OneToMany(mappedBy = "libro")
-    private List<Prestamo> prestamos;
-
-    // Constructor vacío requerido por JPA
-    public Libro() {}
-
-    // Constructor principal
-    public Libro(String titulo, String autor, String editorial, Integer anioPublicacion, Integer ejemplaresTotales) {
-        this.titulo = titulo;
-        this.autor = autor;
-        this.editorial = editorial;
-        this.anioPublicacion = anioPublicacion;
-        this.ejemplaresTotales = (ejemplaresTotales != null && ejemplaresTotales > 0) ? ejemplaresTotales : 1;
-        this.ejemplaresDisponibles = this.ejemplaresTotales; // al inicio todos disponibles
-    }
-
     // Getters y setters
-    public Integer getIdLibro() { return idLibro; }
-    public void setIdLibro(Integer idLibro) { this.idLibro = idLibro; }
-
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
-
-    public String getAutor() { return autor; }
-    public void setAutor(String autor) { this.autor = autor; }
-
-    public String getEditorial() { return editorial; }
-    public void setEditorial(String editorial) { this.editorial = editorial; }
-
-    public Integer getAnioPublicacion() { return anioPublicacion; }
-    public void setAnioPublicacion(Integer anioPublicacion) { this.anioPublicacion = anioPublicacion; }
-
-    public Integer getEjemplaresTotales() { return ejemplaresTotales; }
-    public void setEjemplaresTotales(Integer ejemplaresTotales) {
-        this.ejemplaresTotales = (ejemplaresTotales != null && ejemplaresTotales > 0) ? ejemplaresTotales : 1;
-        if (this.ejemplaresDisponibles == null || this.ejemplaresDisponibles > this.ejemplaresTotales) {
-            this.ejemplaresDisponibles = this.ejemplaresTotales;
-        }
+    public Integer getIdLibro() {
+        return idLibro;
     }
 
-    public Integer getEjemplaresDisponibles() { return ejemplaresDisponibles; }
-    public void setEjemplaresDisponibles(Integer ejemplaresDisponibles) { this.ejemplaresDisponibles = ejemplaresDisponibles; }
+    public void setIdLibro(Integer id_libro) {
+        this.idLibro = id_libro;
+    }
 
-    public List<Prestamo> getPrestamos() { return prestamos; }
-    public void setPrestamos(List<Prestamo> prestamos) { this.prestamos = prestamos; }
+    public String getTitulo() {
+        return titulo;
+    }
 
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
+
+    public String getEditorial() {
+        return editorial;
+    }
+
+    public void setEditorial(String editorial) {
+        this.editorial = editorial;
+    }
+
+    public Integer getAnioPublicacion() {
+        return anioPublicacion;
+    }
+
+    public void setAnioPublicacion(Integer anio_publicacion) {
+        this.anioPublicacion = anio_publicacion;
+    }
+
+    public Integer getEjemplaresTotales() {
+        return ejemplaresTotales;
+    }
+
+    /**
+     * Al actualizar los ejemplares totales, ajustamos automáticamente
+     * los ejemplares disponibles para que no excedan los totales
+     * y nunca sean negativos.
+     */
+    public void setEjemplaresTotales(Integer totales) {
+        if (totales == null) return;
+
+        if (this.ejemplaresTotales == null) {
+            // Caso libro nuevo: disponibles = totales
+            this.ejemplaresDisponibles = totales;
+        } else {
+            // Ajustar disponibles según la diferencia
+            int diferencia = totales - this.ejemplaresTotales;
+            int nuevosDisponibles = this.ejemplaresDisponibles + diferencia;
+
+            if (nuevosDisponibles > totales) {
+                nuevosDisponibles = totales;
+            }
+
+            if (nuevosDisponibles < 0) {
+                nuevosDisponibles = 0;
+            }
+
+            this.ejemplaresDisponibles = nuevosDisponibles;
+        }
+
+        this.ejemplaresTotales = totales;
+    }
+
+    public Integer getEjemplaresDisponibles() {
+        return ejemplaresDisponibles;
+    }
+
+    public void setEjemplaresDisponibles(Integer ejemplares_disponibles) {
+        this.ejemplaresDisponibles = ejemplares_disponibles;
+    }
 }
