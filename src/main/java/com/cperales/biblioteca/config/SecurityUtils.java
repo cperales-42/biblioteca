@@ -26,7 +26,7 @@ public class SecurityUtils {
         return false;
     }
 
-    // Devuelve el nombre del usuario autenticado, o null si no hay nadie
+    // Devuelve el nombre del usuario autenticado, o null
     public String getUsername() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {

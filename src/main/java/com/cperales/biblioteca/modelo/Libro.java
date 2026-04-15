@@ -65,7 +65,7 @@ public class Libro {
     /**
      * Al actualizar los ejemplares totales, ajustamos automáticamente
      * los ejemplares disponibles para que no excedan los totales
-     * y nunca sean negativos.
+     * y nunca sean negativos
      */
     public void setEjemplaresTotales(Integer totales) {
         if (totales == null) return;

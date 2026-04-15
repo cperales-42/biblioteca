@@ -42,9 +42,7 @@ public class UsuarioService implements UserDetailsService {
         return new ArrayList<>(usuarios); // devolvemos copia para no exponer la lista original
     }
 
-    /**
-     * Buscar usuario por ID
-     */
+    // Buscar usuario por ID
     public Usuario obtenerPorId(Integer id) {
         return repo.findById(id).orElse(null);
     }

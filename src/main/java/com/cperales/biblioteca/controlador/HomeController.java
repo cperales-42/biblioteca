@@ -39,6 +39,6 @@ public class HomeController {
     // Login
     @GetMapping("/login")
     public String mostrarLogin() {
-        return "login"; // templates/login.html
+        return "login"; //templates/login.html
     }
 }

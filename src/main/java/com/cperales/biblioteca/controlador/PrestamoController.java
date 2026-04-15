@@ -95,7 +95,7 @@ public class PrestamoController {
         }
     }
 
-    // Método privado para mostrar libros con un mensaje de error
+    // Mostrar libros con un mensaje de error
     private String mostrarLibrosConError(Model model, Usuario usuario, String mensajeError) {
         List<Libro> todosLosLibros = libroRepo.findAll();
 

@@ -92,7 +92,7 @@ public class PrestamoService {
         prestamo.setFechaDevolucion(LocalDate.now());
         prestamoRepo.save(prestamo);
 
-        // Incrementar los ejemplares disponibles del libro
+        // Incrementar los ejemplares disponibles
         Libro libro = prestamo.getLibro();
         libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() + 1);
         libroRepo.save(libro);

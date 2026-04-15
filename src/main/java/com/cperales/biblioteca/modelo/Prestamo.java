@@ -22,7 +22,7 @@ public class Prestamo {
     @JoinColumn(name = "id_libro")
     private Libro libro;
 
-    // Constructor vacío necesario para JPA
+    // Constructor vacío
     public Prestamo() {}
 
     // Constructor principal

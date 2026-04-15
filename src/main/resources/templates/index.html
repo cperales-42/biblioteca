@@ -38,7 +38,7 @@
 </nav>
 
 <footer>
-    <!-- Usuario logueado -->
+    <!-- Usuario logueado-->
     <div sec:authorize="isAuthenticated()">
         Bienvenido!
         <form th:action="@{/logout}" method="post">

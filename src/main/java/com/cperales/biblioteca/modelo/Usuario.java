@@ -19,7 +19,7 @@ public class Usuario {
 
     private String rol; // "LECTOR" o "ADMIN"
 
-    // Constructor vacío requerido por JPA
+    // Constructor vacío
     public Usuario() {}
 
     // Constructor para crear usuarios rápidamente

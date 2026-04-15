@@ -89,7 +89,7 @@ public class UsuarioController {
         return "usuarios/registro";
     }
 
-    // Procesar el registro de un nuevo usuario
+    // Procesar registro de un nuevo usuario
     @PostMapping("/registro")
     public String procesarRegistro(@ModelAttribute Usuario usuario) {
         usuarioService.guardar(usuario);

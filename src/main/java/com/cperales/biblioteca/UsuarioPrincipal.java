@@ -54,10 +54,7 @@ public class UsuarioPrincipal implements UserDetails {
         return usuario.getEmail();
     }
 
-    /**
-     * Estos métodos indican que la cuenta siempre está activa, desbloqueada y válida.
-     * Puedes personalizar si algún día quieres implementar bloqueo o expiración.
-     */
+    // Estos métodos indican que la cuenta siempre está activa, desbloqueada y válida.
     @Override
     public boolean isAccountNonExpired() {
         return true;

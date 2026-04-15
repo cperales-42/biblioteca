@@ -51,7 +51,7 @@ public class LibroController {
         return "libros/lista";
     }
 
-    // Crear un libro nuevo
+    // Crear un libro
     @PostMapping("/libros/crear")
     public String crearLibro(@ModelAttribute Libro libro) {
         Libro libroGuardado = libroService.guardar(libro);

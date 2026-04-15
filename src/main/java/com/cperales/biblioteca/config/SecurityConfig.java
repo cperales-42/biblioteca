@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .accessDeniedPage("/error")
         );
 
-        // Asociamos nuestro proveedor de autenticación
+        // Autenticación
         http.authenticationProvider(daoAuthenticationProvider());
 
         return http.build();

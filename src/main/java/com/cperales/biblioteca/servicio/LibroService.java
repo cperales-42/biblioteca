@@ -49,7 +49,7 @@ public class LibroService {
         return repo.save(libro);
     }
 
-    // Actualizar un libro existente
+    // Actualizar libro existente
     public Libro actualizar(Libro libroActualizado) {
         Libro libroBD = repo.findById(libroActualizado.getIdLibro())
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
