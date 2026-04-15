@@ -8,7 +8,7 @@ El objetivo principal del proyecto es crear un sistema funcional que permita a u
 ---
 
 ## Estado actual
-A fecha de hoy (3 de diciembre de 2025), el proyecto es completamente funcional:
+A fecha de hoy (15 de Abril de 2026), el proyecto está en su segunda entrega:
 
 - Autenticación y autorización de usuarios mediante **Spring Security**.
 - Roles implementados: **ADMIN** y **LECTOR**.
@@ -56,4 +56,12 @@ mysql -u <usuario> -p
 CREATE DATABASE biblioteca;
 USE biblioteca;
 SOURCE db/biblioteca.sql;
+```
+### 2. Usar los usuarios de prueba
+Ya en el programa podras hacer login con:
 
+CORREO: admin@email.com (ADMIN)
+PASSWD: admin
+
+CORREO: juan@email.com (LECTOR)
+PASSWD: asdf
