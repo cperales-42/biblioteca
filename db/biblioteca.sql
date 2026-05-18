@@ -2,7 +2,6 @@
 --
 -- Host: localhost    Database: biblioteca
 -- ------------------------------------------------------
--- Server version	8.0.44
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,12 +15,55 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `usuarios`
+--
+
+DROP TABLE IF EXISTS `usuarios`;
+CREATE TABLE `usuarios` (
+  `id_usuario` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `rol` varchar(50) DEFAULT 'LECTOR',
+  PRIMARY KEY (`id_usuario`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `usuarios`
+--
+
+LOCK TABLES `usuarios` WRITE;
+INSERT INTO `usuarios` VALUES 
+(1,'Administrador','admin@email.com','$2a$10$NUNNkXaxbDnKkidbtcxFUeVJxWgpu5D4gmV7UOyztiPGeKltmuB0S','ADMIN'),
+(2,'Lector de Prueba','lector@email.com','$2a$10$NUNNkXaxbDnKkidbtcxFUeVJxWgpu5D4gmV7UOyztiPGeKltmuB0S','LECTOR');
+UNLOCK TABLES;
+
+--
+-- Table structure for table `categorias`
+--
+
+DROP TABLE IF EXISTS `categorias`;
+CREATE TABLE `categorias` (
+  `id_categoria` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_categoria`),
+  UNIQUE KEY `nombre` (`nombre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `categorias`
+--
+
+LOCK TABLES `categorias` WRITE;
+INSERT INTO `categorias` VALUES (1,'Novela'),(2,'Ciencia Ficción'),(3,'Historia'),(4,'Fantasía');
+UNLOCK TABLES;
+
+--
 -- Table structure for table `libros`
 --
 
 DROP TABLE IF EXISTS `libros`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `libros` (
   `id_libro` int NOT NULL AUTO_INCREMENT,
   `titulo` varchar(150) NOT NULL,
@@ -30,18 +72,21 @@ CREATE TABLE `libros` (
   `anio_publicacion` int DEFAULT NULL,
   `ejemplares_totales` int NOT NULL DEFAULT '1',
   `ejemplares_disponibles` int NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_libro`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id_categoria` int DEFAULT NULL,
+  PRIMARY KEY (`id_libro`),
+  KEY `fk_libro_categoria` (`id_categoria`),
+  CONSTRAINT `fk_libro_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `libros`
 --
 
 LOCK TABLES `libros` WRITE;
-/*!40000 ALTER TABLE `libros` DISABLE KEYS */;
-INSERT INTO `libros` VALUES (6,'El Quijote','Cervantes','Planeta',1605,243,243),(7,'Cien Años de Soledad','Gabriel García Márquez','Sudamericana',1967,3,3),(8,'La Sombra del Viento','Carlos Ruiz Zafón','Planeta',2001,4,4),(9,'spopp','kanjasn','llar',4,145,145);
-/*!40000 ALTER TABLE `libros` ENABLE KEYS */;
+INSERT INTO `libros` VALUES 
+(1,'El Quijote','Miguel de Cervantes','Planeta',1605,10,10,1),
+(2,'Cien Años de Soledad','Gabriel García Márquez','Sudamericana',1967,5,5,1),
+(3,'La Sombra del Viento','Carlos Ruiz Zafón','Planeta',2001,4,4,1);
 UNLOCK TABLES;
 
 --
@@ -49,8 +94,6 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `prestamos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `prestamos` (
   `id_prestamo` int NOT NULL AUTO_INCREMENT,
   `fecha_prestamo` date NOT NULL,
@@ -62,48 +105,9 @@ CREATE TABLE `prestamos` (
   KEY `id_libro` (`id_libro`),
   CONSTRAINT `prestamos_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `prestamos_ibfk_2` FOREIGN KEY (`id_libro`) REFERENCES `libros` (`id_libro`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `prestamos`
---
-
-LOCK TABLES `prestamos` WRITE;
-/*!40000 ALTER TABLE `prestamos` DISABLE KEYS */;
-INSERT INTO `prestamos` VALUES (3,'2025-11-16','2025-11-16',4,6),(4,'2025-11-16',NULL,5,7),(5,'2025-11-16',NULL,6,8);
-/*!40000 ALTER TABLE `prestamos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `usuarios`
---
-
-DROP TABLE IF EXISTS `usuarios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `usuarios` (
-  `id_usuario` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `rol` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_usuario`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `usuarios`
---
-
-LOCK TABLES `usuarios` WRITE;
-/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (4,'Juan','juan@email.com','asdf','ADMIN'),(5,'Maria','mariaa@email.com','asdf','ADMIN'),(6,'Pedro','pedro@email.com','asdf','ADMIN'),(7,'spopp','spopp@kanjasn.llar','$2a$10$NUNNkXaxbDnKkidbtcxFUeVJxWgpu5D4gmV7UOyztiPGeKltmuB0S','LECTOR'),(9,'Rigoberto','hola@gmail.com','$2a$10$Vs6CI5ndVtBI8VmhjZfRJupVv04FvlHHB5M.vG0Qzv6ds3Iae5nAG','LECTOR'),(10,'admin','admin@email.com','$2b$12$cv8aoQMuBlR2n/gAbRycLeDrRiIFLiELY17f3ZZ8bwRaac/vVBb4y','ADMIN');
-/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

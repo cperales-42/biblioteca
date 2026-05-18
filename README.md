@@ -1,37 +1,31 @@
 # Biblioteca TFG
 
 ## Descripción del proyecto
-Este proyecto es una aplicación web de gestión de biblioteca desarrollada con **Spring Boot**, **Thymeleaf** y **MySQL**. Permite gestionar libros, usuarios y préstamos de manera sencilla. La aplicación incluye autenticación y autorización según roles (ADMIN y LECTOR).
+Este proyecto es una aplicación web de gestión de biblioteca desarrollada con **Spring Boot**, **Thymeleaf** y **MySQL**. Permite gestionar libros, categorías, usuarios y préstamos de manera sencilla. La aplicación incluye autenticación y autorización según roles (ADMIN y LECTOR).
 
-El objetivo principal del proyecto es crear un sistema funcional que permita a un administrador gestionar los recursos de la biblioteca (añadir, editar y eliminar libros y usuarios) y a los lectores consultar libros y solicitar préstamos, con control de disponibilidad de ejemplares y control de préstamos activos.
+El objetivo principal del proyecto es crear un sistema funcional que permita a un administrador gestionar los recursos de la biblioteca (añadir, editar y eliminar libros, categorías y usuarios) y a los lectores consultar el catálogo y solicitar préstamos, con control estricto de disponibilidad de ejemplares y préstamos activos.
 
 ---
 
 ## Estado actual
-A fecha de hoy (15 de Abril de 2026), el proyecto está en su segunda entrega:
+A fecha de hoy (18 de Mayo de 2026), el proyecto se encuentra en una fase avanzada con las siguientes funcionalidades:
 
-- Autenticación y autorización de usuarios mediante **Spring Security**.
-- Roles implementados: **ADMIN** y **LECTOR**.
-- Gestión de usuarios:
-  - Registro de nuevos usuarios.
-  - Edición y eliminación de usuarios por administradores.
-- Gestión de libros:
-  - Creación, actualización y eliminación de libros por administradores.
-  - Visualización de la lista de libros.
-  - Control automático de ejemplares disponibles al modificar los totales.
-- Gestión de préstamos:
-  - Los lectores pueden solicitar un préstamo si no tienen uno activo.
-  - El botón de "Pedir prestado" cambia a rojo con el texto "Préstamo activo" cuando el usuario ya tiene un préstamo o no hay ejemplares disponibles.
-  - Devolución de préstamos, incrementando automáticamente los ejemplares disponibles.
-- Seguridad:
-  - Rutas protegidas según roles.
-  - Página de inicio adaptativa según el rol del usuario.
-- Interfaz:
-  - Listas de libros y préstamos con botones contextuales.
-  - Formularios de creación y edición con validación básica.
-  - Botón "Volver al inicio" disponible en páginas de listas.
-
-El proyecto está listo para desplegar y usar como sistema básico de biblioteca.
+- **Autenticación y autorización**: Implementado mediante **Spring Security** con protección de rutas por roles.
+- **Gestión de Usuarios**:
+  - Registro público de nuevos lectores.
+  - CRUD completo de usuarios para administradores.
+- **Gestión del Catálogo**:
+  - CRUD de **Categorías** (Novela, Ciencia Ficción, Historia, etc.).
+  - CRUD de **Libros** vinculados a categorías.
+  - Control automático de stock: los ejemplares disponibles se ajustan solos al cambiar los totales o realizar préstamos/devoluciones.
+- **Sistema de Préstamos**:
+  - Los lectores pueden solicitar un préstamo si no tienen uno pendiente.
+  - Validación visual: El botón de "Pedir prestado" se bloquea y cambia de estado si el libro no tiene stock o el usuario ya tiene un préstamo activo.
+  - Registro de devoluciones con actualización inmediata de disponibilidad.
+- **Interfaz y Seguridad**:
+  - Diseño limpio con **Bootstrap**.
+  - Encriptación de contraseñas con **BCrypt**.
+  - Despliegue simplificado mediante **Docker**.
 
 ---
 
@@ -41,27 +35,43 @@ El proyecto está listo para desplegar y usar como sistema básico de biblioteca
 - Spring Security
 - Spring Data JPA
 - Thymeleaf
-- MySQL 8
+- MySQL 8 (Dockerizado)
 - Maven
+- Bootstrap 5
 
 ---
 
 ## Cómo ejecutar el proyecto
 
-### 1. Crear la base de datos
-Abre una terminal MySQL y ejecuta:
+### Opción A: Usando Docker (Recomendado)
+Si tienes Docker instalado, puedes levantar la base de datos con un solo comando:
 
-```sql
-mysql -u <usuario> -p
-CREATE DATABASE biblioteca;
-USE biblioteca;
-SOURCE db/biblioteca.sql;
+```bash
+docker-compose up -d
 ```
-### 2. Usar los usuarios de prueba
-Ya en el programa podras hacer login con:
+Esto creará el contenedor de MySQL y cargará automáticamente la estructura y los datos iniciales desde `db/biblioteca.sql`.
 
-CORREO: admin@email.com (ADMIN)
-PASSWD: admin
+### Opción B: Configuración manual
+1. Crea la base de datos en tu servidor MySQL local:
+   ```sql
+   CREATE DATABASE biblioteca;
+   ```
+2. Importa el archivo de datos:
+   ```bash
+   mysql -u <usuario> -p biblioteca < db/biblioteca.sql
+   ```
+3. Revisa el archivo `src/main/resources/application.properties` para asegurar que el usuario y la contraseña coincidan con tu configuración local.
 
-CORREO: juan@email.com (LECTOR)
-PASSWD: asdf
+---
+
+## Usuarios de prueba
+Puedes acceder al sistema con las siguientes credenciales preconfiguradas:
+
+- **Administrador**:
+  - **Correo**: admin@email.com
+  - **Contraseña**: cperales
+- **Lector**:
+  - **Correo**: lector@email.com
+  - **Contraseña**: cperales
+
+*(Nota: También puedes registrar un nuevo usuario desde la pantalla de registro).*
