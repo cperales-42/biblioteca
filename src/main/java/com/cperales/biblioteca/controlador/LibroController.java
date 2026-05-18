@@ -2,6 +2,7 @@ package com.cperales.biblioteca.controlador;
 
 import com.cperales.biblioteca.UsuarioPrincipal;
 import com.cperales.biblioteca.modelo.Libro;
+import com.cperales.biblioteca.servicio.CategoriaService;
 import com.cperales.biblioteca.servicio.LibroService;
 import com.cperales.biblioteca.servicio.PrestamoService;
 import org.springframework.security.core.Authentication;
@@ -17,10 +18,12 @@ public class LibroController {
 
     private final LibroService libroService;
     private final PrestamoService prestamoService;
+    private final CategoriaService categoriaService;
 
-    public LibroController(LibroService libroService, PrestamoService prestamoService) {
+    public LibroController(LibroService libroService, PrestamoService prestamoService, CategoriaService categoriaService) {
         this.libroService = libroService;
         this.prestamoService = prestamoService;
+        this.categoriaService = categoriaService;
     }
 
     // Mostrar la lista de libros
@@ -45,6 +48,7 @@ public class LibroController {
         );
 
         model.addAttribute("libros", librosFiltrados);
+        model.addAttribute("categorias", categoriaService.obtenerTodas());
         model.addAttribute("titulo", titulo);
         model.addAttribute("autor", autor);
 

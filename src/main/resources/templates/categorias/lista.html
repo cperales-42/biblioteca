@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Categorías</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f8; }
+        h1 { color: #333; }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover { background-color: #f1f1f1; }
+
+        form.inline { display: inline; }
+
+        input {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 250px;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #218838; }
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-container input {
+            margin-bottom: 10px;
+        }
+
+        .form-container button {
+            background-color: #007bff;
+        }
+
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-rojo {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-rojo:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Botón volver al inicio-->
+<a href="/" style="display:inline-block; margin-bottom:20px; padding:8px 16px; background:#007bff; color:white; border-radius:6px; text-decoration:none; transition:0.3s;">
+    ← Volver al inicio
+</a>
+
+<h1>Gestión de Categorías</h1>
+
+<!-- Formulario añadir categoría -->
+<div class="form-container">
+    <h3>Añadir Nueva Categoría</h3>
+    <form th:action="@{/categorias/crear}" th:object="${nuevaCategoria}" method="post">
+        <input type="text" th:field="*{nombre}" placeholder="Nombre de la categoría" required>
+        <button type="submit">Guardar Categoría</button>
+    </form>
+</div>
+
+<!-- Tabla de categorías -->
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cat : ${categorias}">
+        <td th:text="${cat.idCategoria}"></td>
+        <td th:text="${cat.nombre}"></td>
+        <td>
+            <form th:action="@{/categorias/eliminar/{id}(id=${cat.idCategoria})}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar esta categoría?');" class="inline">
+                <button type="submit" class="btn-rojo">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

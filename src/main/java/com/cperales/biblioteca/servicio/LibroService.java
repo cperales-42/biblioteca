@@ -62,6 +62,7 @@ public class LibroService {
         libroBD.setAutor(libroActualizado.getAutor());
         libroBD.setEditorial(libroActualizado.getEditorial());
         libroBD.setAnioPublicacion(libroActualizado.getAnioPublicacion());
+        libroBD.setCategoria(libroActualizado.getCategoria());
 
         return repo.save(libroBD);
     }

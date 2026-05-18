@@ -17,13 +17,17 @@ public class Libro {
     private Integer ejemplaresTotales;
     private Integer ejemplaresDisponibles;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
+
     // Getters y setters
     public Integer getIdLibro() {
         return idLibro;
     }
 
-    public void setIdLibro(Integer id_libro) {
-        this.idLibro = id_libro;
+    public void setIdLibro(Integer idLibro) {
+        this.idLibro = idLibro;
     }
 
     public String getTitulo() {
@@ -54,8 +58,8 @@ public class Libro {
         return anioPublicacion;
     }
 
-    public void setAnioPublicacion(Integer anio_publicacion) {
-        this.anioPublicacion = anio_publicacion;
+    public void setAnioPublicacion(Integer anioPublicacion) {
+        this.anioPublicacion = anioPublicacion;
     }
 
     public Integer getEjemplaresTotales() {
@@ -96,7 +100,15 @@ public class Libro {
         return ejemplaresDisponibles;
     }
 
-    public void setEjemplaresDisponibles(Integer ejemplares_disponibles) {
-        this.ejemplaresDisponibles = ejemplares_disponibles;
+    public void setEjemplaresDisponibles(Integer ejemplaresDisponibles) {
+        this.ejemplaresDisponibles = ejemplaresDisponibles;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 }
