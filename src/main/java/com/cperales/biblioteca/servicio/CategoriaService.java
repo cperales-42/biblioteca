@@ -22,11 +22,6 @@ public class CategoriaService {
         return categoriaRepo.findAll();
     }
 
-    // Buscar categoría por ID
-    public Categoria obtenerPorId(Integer id) {
-        return categoriaRepo.findById(id).orElse(null);
-    }
-
     /**
      * Guardar una nueva categoría
      */
@@ -39,12 +34,5 @@ public class CategoriaService {
      */
     public void eliminar(Integer id) {
         categoriaRepo.deleteById(id);
-    }
-
-    /**
-     * Buscar categoría por nombre
-     */
-    public Categoria obtenerPorNombre(String nombre) {
-        return categoriaRepo.findByNombre(nombre).orElse(null);
     }
 }

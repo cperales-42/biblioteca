@@ -58,6 +58,9 @@ public class UsuarioController {
         String nuevaPassword = usuarioForm.getPassword();
         if (nuevaPassword != null && !nuevaPassword.isBlank()) {
             usuarioExistente.setPassword(nuevaPassword);
+        } else {
+            // Importante: No borrar la contraseña si el campo viene vacío del form
+            usuarioExistente.setPassword(null);
         }
 
         usuarioService.actualizar(usuarioExistente);
@@ -92,6 +95,8 @@ public class UsuarioController {
     // Procesar registro de un nuevo usuario
     @PostMapping("/registro")
     public String procesarRegistro(@ModelAttribute Usuario usuario) {
+        // Asignar rol LECTOR por defecto al registrarse
+        usuario.setRol("LECTOR");
         usuarioService.guardar(usuario);
         return "redirect:/login";
     }

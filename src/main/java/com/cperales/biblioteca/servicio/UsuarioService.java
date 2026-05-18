@@ -6,6 +6,7 @@ import com.cperales.biblioteca.repositorio.UsuarioRepo;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,9 +16,11 @@ import java.util.List;
 public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepo repo;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepo repo) {
+    public UsuarioService(UsuarioRepo repo, PasswordEncoder passwordEncoder) {
         this.repo = repo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -57,24 +60,32 @@ public class UsuarioService implements UserDetailsService {
     /**
      * Guardar un nuevo usuario
      */
-    public Usuario guardar(Usuario usuario) {
-        return repo.save(usuario);
+    public void guardar(Usuario usuario) {
+        if (usuario.getPassword() != null) {
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        }
+        repo.save(usuario);
     }
 
     /**
      * Actualizar un usuario existente
      */
-    public Usuario actualizar(Usuario usuario) {
+    public void actualizar(Usuario usuario) {
         Usuario existente = repo.findById(usuario.getIdUsuario())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Actualizamos campos manualmente
         existente.setNombre(usuario.getNombre());
         existente.setEmail(usuario.getEmail());
-        existente.setPassword(usuario.getPassword());
+        
+        // Solo actualizamos la contraseña si se proporcionó una nueva
+        if (usuario.getPassword() != null && !usuario.getPassword().isBlank()) {
+            existente.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        }
+        
         existente.setRol(usuario.getRol());
 
-        return repo.save(existente);
+        repo.save(existente);
     }
 
     /**

@@ -15,21 +15,6 @@ public class LibroService {
         this.repo = repo;
     }
 
-    // Listar todos los libros disponibles
-    public List<Libro> listarTodos() {
-        return repo.findAll();
-    }
-
-    // Buscar libros por título (contiene, case insensitive)
-    public List<Libro> buscarPorTitulo(String titulo) {
-        return repo.findByTituloContainingIgnoreCase(titulo);
-    }
-
-    // Buscar libros por autor (contiene, case insensitive)
-    public List<Libro> buscarPorAutor(String autor) {
-        return repo.findByAutorContainingIgnoreCase(autor);
-    }
-
     // Buscar libros por título y autor al mismo tiempo
     public List<Libro> buscarPorTituloYAutor(String titulo, String autor) {
         String t = titulo != null ? titulo : "";
@@ -50,7 +35,7 @@ public class LibroService {
     }
 
     // Actualizar libro existente
-    public Libro actualizar(Libro libroActualizado) {
+    public void actualizar(Libro libroActualizado) {
         Libro libroBD = repo.findById(libroActualizado.getIdLibro())
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
 
@@ -64,11 +49,6 @@ public class LibroService {
         libroBD.setAnioPublicacion(libroActualizado.getAnioPublicacion());
         libroBD.setCategoria(libroActualizado.getCategoria());
 
-        return repo.save(libroBD);
-    }
-
-    // Eliminar un libro por ID
-    public void eliminar(Integer id) {
-        repo.deleteById(id);
+        repo.save(libroBD);
     }
 }
