@@ -1,0 +1,15 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: biblioteca-db
+    environment:
+      MYSQL_DATABASE: biblioteca
+      MYSQL_ROOT_PASSWORD: cperales
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/biblioteca.sql:/docker-entrypoint-initdb.d/biblioteca.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
