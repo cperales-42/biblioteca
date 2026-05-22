@@ -34,9 +34,9 @@ CREATE TABLE `usuarios` (
 --
 
 LOCK TABLES `usuarios` WRITE;
-INSERT INTO `usuarios` VALUES 
-(1,'Administrador','admin@email.com','$2a$10$G0m9y79mXpnd66E2aY6qOuL3t5XlD/oW6W6C8X.88V63f93rW39fS','ADMIN'),
-(2,'Lector de Prueba','lector@email.com','$2a$10$G0m9y79mXpnd66E2aY6qOuL3t5XlD/oW6W6C8X.88V63f93rW39fS','LECTOR');
+INSERT INTO `usuarios` VALUES
+(1,'Administrador','admin@email.com','$2a$10$slOuGFuBJXMFUJOJQOzGluJ/VZGi2W7TZ/ipLSBFcNGtDJLl9QUJm','ADMIN'),
+(2,'Lector de Prueba','lector@email.com','$2a$10$slOuGFuBJXMFUJOJQOzGluJ/VZGi2W7TZ/ipLSBFcNGtDJLl9QUJm','LECTOR');
 UNLOCK TABLES;
 
 --
