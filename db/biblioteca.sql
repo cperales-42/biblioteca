@@ -42,6 +42,7 @@ UNLOCK TABLES;
 --
 -- Table structure for table `categorias`
 --
+--
 
 DROP TABLE IF EXISTS `categorias`;
 CREATE TABLE `categorias` (
