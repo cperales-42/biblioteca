@@ -29,8 +29,6 @@ public class LibroService {
 
     // Guardar un libro nuevo
     public Libro guardar(Libro libro) {
-        // Asegurarnos de que ejemplaresDisponibles se ajuste automáticamente
-        libro.setEjemplaresTotales(libro.getEjemplaresTotales());
         return repo.save(libro);
     }
 
@@ -39,15 +37,13 @@ public class LibroService {
         Libro libroBD = repo.findById(libroActualizado.getIdLibro())
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
 
-        // Solo cambiamos los totales, el setter ajusta disponibles automáticamente
-        libroBD.setEjemplaresTotales(libroActualizado.getEjemplaresTotales());
-
         // Actualizamos el resto de campos
         libroBD.setTitulo(libroActualizado.getTitulo());
         libroBD.setAutor(libroActualizado.getAutor());
         libroBD.setEditorial(libroActualizado.getEditorial());
         libroBD.setAnioPublicacion(libroActualizado.getAnioPublicacion());
         libroBD.setCategoria(libroActualizado.getCategoria());
+        libroBD.setEjemplaresTotales(libroActualizado.getEjemplaresTotales());
 
         repo.save(libroBD);
     }

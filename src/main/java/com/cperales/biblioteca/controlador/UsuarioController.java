@@ -74,16 +74,6 @@ public class UsuarioController {
         return "redirect:/usuarios";
     }
 
-    // Mostrar index con usuario autenticado
-    @GetMapping("/")
-    public String index(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails != null) {
-            Usuario usuarioActual = usuarioService.buscarPorEmail(userDetails.getUsername());
-            model.addAttribute("usuarioActual", usuarioActual);
-        }
-        return "index";
-    }
-
     // Mostrar formulario de registro
     @GetMapping("/registro")
     public String mostrarFormularioRegistro(Model model) {

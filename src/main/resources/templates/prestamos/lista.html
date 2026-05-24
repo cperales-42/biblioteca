@@ -88,7 +88,9 @@
         <th>ID</th>
         <th>Libro</th>
         <th>Fecha Préstamo</th>
+        <th>Fecha Límite</th>
         <th>Fecha Devolución</th>
+        <th>Estado</th>
         <th th:if="${usuarioActual.rol == 'ADMIN'}">Usuario</th>
         <th>Acciones</th>
     </tr>
@@ -96,14 +98,17 @@
         <td th:text="${prestamo.idPrestamo}"></td>
         <td th:text="${prestamo.libro.titulo}"></td>
         <td th:text="${prestamo.fechaPrestamo}"></td>
+        <td th:text="${prestamo.fechaLimite}"></td>
         <td th:text="${prestamo.fechaDevolucion}"></td>
+        <td th:text="${prestamo.estado}"></td>
         <td th:if="${usuarioActual.rol == 'ADMIN'}" th:text="${prestamo.usuario.nombre}"></td>
         <td>
-            <form th:if="${prestamo.fechaDevolucion == null}"
+            <form th:if="${prestamo.estado.name() == 'prestado' or prestamo.estado.name() == 'vencido'}"
                   th:action="@{'/prestamos/devolver/' + ${prestamo.idPrestamo}}" method="post">
                 <button type="submit">Devolver</button>
             </form>
-            <span th:if="${prestamo.fechaDevolucion != null}">Devuelto</span>
+            <span th:if="${prestamo.estado.name() == 'devuelto'}">Devuelto</span>
+            <span th:if="${prestamo.estado.name() == 'perdido'}">Perdido</span>
         </td>
     </tr>
 </table>

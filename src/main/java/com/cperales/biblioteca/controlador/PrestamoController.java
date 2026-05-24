@@ -1,5 +1,6 @@
 package com.cperales.biblioteca.controlador;
 
+import com.cperales.biblioteca.UsuarioPrincipal;
 import com.cperales.biblioteca.modelo.Libro;
 import com.cperales.biblioteca.modelo.Prestamo;
 import com.cperales.biblioteca.modelo.Usuario;
@@ -7,7 +8,6 @@ import com.cperales.biblioteca.servicio.PrestamoService;
 import com.cperales.biblioteca.servicio.UsuarioService;
 import com.cperales.biblioteca.repositorio.LibroRepo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +32,8 @@ public class PrestamoController {
 
     // Listar préstamos
     @GetMapping
-    public String listarPrestamos(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        String email = userDetails.getUsername();
-        Usuario usuarioActual = usuarioService.buscarPorEmail(email);
+    public String listarPrestamos(Model model, @AuthenticationPrincipal UsuarioPrincipal principal) {
+        Usuario usuarioActual = principal.getUsuario();
 
         List<Prestamo> prestamos;
 
@@ -53,10 +52,10 @@ public class PrestamoController {
     // Crear préstamo desde un libro
     @PostMapping("/crear/{idLibro}")
     public String crearPrestamo(@PathVariable Integer idLibro,
-                                @AuthenticationPrincipal UserDetails userDetails,
+                                @AuthenticationPrincipal UsuarioPrincipal principal,
                                 Model model) {
 
-        Usuario usuarioActual = usuarioService.buscarPorEmail(userDetails.getUsername());
+        Usuario usuarioActual = principal.getUsuario();
 
         try {
             prestamoService.crearPrestamo(usuarioActual, idLibro);
@@ -69,10 +68,10 @@ public class PrestamoController {
     // Devolver préstamo
     @PostMapping("/devolver/{idPrestamo}")
     public String devolverPrestamo(@PathVariable Integer idPrestamo,
-                                   @AuthenticationPrincipal UserDetails userDetails,
+                                   @AuthenticationPrincipal UsuarioPrincipal principal,
                                    Model model) {
 
-        Usuario usuarioActual = usuarioService.buscarPorEmail(userDetails.getUsername());
+        Usuario usuarioActual = principal.getUsuario();
 
         try {
             // Verificar que el préstamo pertenece al usuario si no es ADMIN
@@ -91,7 +90,7 @@ public class PrestamoController {
 
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return listarPrestamos(model, userDetails);
+            return listarPrestamos(model, principal);
         }
     }
 

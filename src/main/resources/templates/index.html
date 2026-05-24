@@ -34,14 +34,14 @@
 <nav>
     <a th:href="@{/libros}">Libros</a>
     <a th:href="@{/categorias}">Categorías</a>
-    <a th:href="@{/usuarios}">Usuarios</a>
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/usuarios}">Usuarios</a>
     <a th:href="@{/prestamos}">Préstamos</a>
 </nav>
 
 <footer>
     <!-- Usuario logueado-->
     <div sec:authorize="isAuthenticated()">
-        Bienvenido!
+        Bienvenido, <span th:text="${nombreUsuario}">Usuario</span>!
         <form th:action="@{/logout}" method="post">
             <button type="submit">Cerrar sesión</button>
         </form>

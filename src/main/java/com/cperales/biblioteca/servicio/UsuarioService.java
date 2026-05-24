@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,11 +37,10 @@ public class UsuarioService implements UserDetailsService {
     }
 
     /**
-     * Devuelve todos los usuarios en una lista nueva
+     * Devuelve todos los usuarios
      */
     public List<Usuario> listarTodos() {
-        List<Usuario> usuarios = repo.findAll();
-        return new ArrayList<>(usuarios); // devolvemos copia para no exponer la lista original
+        return repo.findAll();
     }
 
     // Buscar usuario por ID

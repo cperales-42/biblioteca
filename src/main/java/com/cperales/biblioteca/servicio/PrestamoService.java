@@ -1,5 +1,6 @@
 package com.cperales.biblioteca.servicio;
 
+import com.cperales.biblioteca.modelo.EstadoPrestamo;
 import com.cperales.biblioteca.modelo.Libro;
 import com.cperales.biblioteca.modelo.Prestamo;
 import com.cperales.biblioteca.modelo.Usuario;
@@ -39,7 +40,7 @@ public class PrestamoService {
         List<Prestamo> prestamos = prestamoRepo.findByUsuario(usuario);
 
         for (Prestamo p : prestamos) {
-            if (p.getFechaDevolucion() == null) {
+            if (p.getEstado() == EstadoPrestamo.prestado || p.getEstado() == EstadoPrestamo.vencido) {
                 return true;
             }
         }
@@ -90,11 +91,14 @@ public class PrestamoService {
 
         // Marcar la devolución
         prestamo.setFechaDevolucion(LocalDate.now());
+        prestamo.setEstado(EstadoPrestamo.devuelto);
         prestamoRepo.save(prestamo);
 
         // Incrementar los ejemplares disponibles
         Libro libro = prestamo.getLibro();
-        libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() + 1);
-        libroRepo.save(libro);
+        if (libro.getEjemplaresDisponibles() < libro.getEjemplaresTotales()) {
+            libro.setEjemplaresDisponibles(libro.getEjemplaresDisponibles() + 1);
+            libroRepo.save(libro);
+        }
     }
 }

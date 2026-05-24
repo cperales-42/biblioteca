@@ -9,12 +9,6 @@ import java.util.List;
 @Repository
 public interface LibroRepo extends JpaRepository<Libro, Integer> {
 
-    // Buscar libros por título (contiene el texto, case insensitive)
-    List<Libro> findByTituloContainingIgnoreCase(String titulo);
-
-    // Buscar libros por autor (contiene el texto, case insensitive)
-    List<Libro> findByAutorContainingIgnoreCase(String autor);
-
     // Buscar libros por título y autor al mismo tiempo
     List<Libro> findByTituloContainingIgnoreCaseAndAutorContainingIgnoreCase(String titulo, String autor);
 }

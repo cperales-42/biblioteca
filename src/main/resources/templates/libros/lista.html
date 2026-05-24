@@ -91,7 +91,7 @@
 <h1>Lista de Libros</h1>
 
 <!-- Formulario añadir libro -->
-<div th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'ADMIN'}" class="form-container">
+<div th:if="${usuarioActual != null and usuarioActual.rol == 'ADMIN'}" class="form-container">
     <h3>Añadir Nuevo Libro</h3>
     <form th:action="@{/libros/crear}" method="post">
         <input type="text" name="titulo" placeholder="Título" required/>
@@ -119,8 +119,8 @@
         <th>Categoría</th>
         <th>Totales</th>
         <th>Disponibles</th>
-        <th th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'ADMIN'}">Modificar</th>
-        <th th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'LECTOR'}">Acción</th>
+        <th th:if="${usuarioActual != null and usuarioActual.rol == 'ADMIN'}">Modificar</th>
+        <th th:if="${usuarioActual != null and usuarioActual.rol == 'LECTOR'}">Acción</th>
     </tr>
     </thead>
     <tbody>
@@ -135,7 +135,7 @@
         <td th:text="${libro.ejemplaresDisponibles}"></td>
 
         <!-- ADMIN: Modificar totales -->
-        <td th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'ADMIN'}">
+        <td th:if="${usuarioActual != null and usuarioActual.rol == 'ADMIN'}">
             <form th:action="@{/libros/actualizar/{id}(id=${libro.idLibro})}" method="post" class="inline">
                 <input type="number" name="ejemplaresTotales" th:value="${libro.ejemplaresTotales}" min="1"/>
                 <button type="submit">Actualizar</button>
@@ -143,7 +143,7 @@
         </td>
 
         <!-- LECTOR: Pedir prestado -->
-        <td th:if="${usuarioActual != null and usuarioActual.usuario.rol == 'LECTOR'}">
+        <td th:if="${usuarioActual != null and usuarioActual.rol == 'LECTOR'}">
             <form th:action="@{/prestamos/crear/{id}(id=${libro.idLibro})}" method="post" class="inline">
                 <button type="submit"
                         th:disabled="${tienePrestamoActivo || libro.ejemplaresDisponibles == 0}"

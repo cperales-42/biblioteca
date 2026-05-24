@@ -39,6 +39,14 @@ A fecha de hoy (18 de Mayo de 2026), el proyecto se encuentra en una fase avanza
 - Maven
 - Bootstrap 5
 
+### 4.2 Lógica de Disponibilidad y Seguridad
+- **Disponibilidad**: La lógica implementada en `PrestamoService` garantiza que:
+    - Al prestar un libro, el contador de `ejemplares_disponibles` disminuye en 1.
+    - No se permite prestar un libro si `ejemplares_disponibles` es 0 o menor.
+    - Al devolver un libro, `ejemplares_disponibles` aumenta en 1, pero nunca superará el valor de `ejemplares_totales`.
+- **Seguridad**: Todas las contraseñas se almacenan hasheadas mediante **BCrypt** (configurado en `SecurityConfig`). Los datos de prueba en `biblioteca.sql` y `DataInitializer` utilizan este algoritmo para garantizar la seguridad.
+- **Histórico**: Se ha cambiado la política de borrado a **RESTRICT** en las claves foráneas de los préstamos para evitar la pérdida de datos históricos de auditoría.
+
 ---
 
 ## Cómo ejecutar el proyecto

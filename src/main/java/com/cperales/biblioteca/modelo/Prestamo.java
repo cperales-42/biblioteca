@@ -1,7 +1,10 @@
 package com.cperales.biblioteca.modelo;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "prestamos")
@@ -12,7 +15,18 @@ public class Prestamo {
     private Integer idPrestamo;
 
     private LocalDate fechaPrestamo;
+    private LocalDate fechaLimite;
     private LocalDate fechaDevolucion;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoPrestamo estado;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -28,9 +42,11 @@ public class Prestamo {
     // Constructor principal
     public Prestamo(LocalDate fechaPrestamo, Usuario usuario, Libro libro) {
         this.fechaPrestamo = fechaPrestamo;
+        this.fechaLimite = fechaPrestamo.plusDays(15); // Por defecto 15 días
         this.usuario = usuario;
         this.libro = libro;
         this.fechaDevolucion = null; // Inicialmente no hay devolución
+        this.estado = EstadoPrestamo.prestado;
     }
 
     // Getters y setters
@@ -72,5 +88,37 @@ public class Prestamo {
 
     public void setLibro(Libro libro) {
         this.libro = libro;
+    }
+
+    public LocalDate getFechaLimite() {
+        return fechaLimite;
+    }
+
+    public void setFechaLimite(LocalDate fechaLimite) {
+        this.fechaLimite = fechaLimite;
+    }
+
+    public EstadoPrestamo getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPrestamo estado) {
+        this.estado = estado;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

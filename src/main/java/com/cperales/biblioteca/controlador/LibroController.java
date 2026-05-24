@@ -5,12 +5,11 @@ import com.cperales.biblioteca.modelo.Libro;
 import com.cperales.biblioteca.servicio.CategoriaService;
 import com.cperales.biblioteca.servicio.LibroService;
 import com.cperales.biblioteca.servicio.PrestamoService;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -30,14 +29,13 @@ public class LibroController {
     @GetMapping("/libros")
     public String listarLibros(@RequestParam(required = false) String titulo,
                                @RequestParam(required = false) String autor,
-                               Model model, Principal principal) {
+                               Model model, @AuthenticationPrincipal UsuarioPrincipal principal) {
 
         // Verificar si hay usuario autenticado
         if (principal != null) {
-            UsuarioPrincipal usuarioPrincipal = (UsuarioPrincipal) ((Authentication) principal).getPrincipal();
-            boolean prestamoActivo = prestamoService.tienePrestamoActivo(usuarioPrincipal.getUsuario());
+            boolean prestamoActivo = prestamoService.tienePrestamoActivo(principal.getUsuario());
 
-            model.addAttribute("usuarioActual", usuarioPrincipal);
+            model.addAttribute("usuarioActual", principal.getUsuario());
             model.addAttribute("tienePrestamoActivo", prestamoActivo);
         }
 
