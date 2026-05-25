@@ -33,7 +33,7 @@
 
 <nav>
     <a th:href="@{/libros}">Libros</a>
-    <a th:href="@{/categorias}">Categorías</a>
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/categorias}">Categorías</a>
     <a sec:authorize="hasRole('ADMIN')" th:href="@{/usuarios}">Usuarios</a>
     <a th:href="@{/prestamos}">Préstamos</a>
 </nav>

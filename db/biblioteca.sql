@@ -28,17 +28,6 @@ CREATE TABLE `usuarios` (
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `usuarios`
---
-
-LOCK TABLES `usuarios` WRITE;
-INSERT INTO `usuarios` VALUES
-(1,'Administrador','admin@email.com','$2a$10$slOuGFuBJXMFUJOJQOzGluJ/VZGi2W7TZ/ipLSBFcNGtDJLl9QUJm','ADMIN'),
-(2,'Lector de Prueba','lector@email.com','$2a$10$slOuGFuBJXMFUJOJQOzGluJ/VZGi2W7TZ/ipLSBFcNGtDJLl9QUJm','LECTOR');
-UNLOCK TABLES;
-
 --
 -- Table structure for table `categorias`
 --
