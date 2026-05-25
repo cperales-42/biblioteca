@@ -38,9 +38,9 @@ public class SecurityConfig {
                 .requestMatchers("/", "/login", "/usuarios/registro",
                         "/css/**", "/js/**", "/images/**").permitAll()
                 // URLs de libros y préstamos para lectores y admins
-                .requestMatchers("/libros/**", "/prestamos/**", "/categorias/**").hasAnyRole("ADMIN", "LECTOR")
+                .requestMatchers("/libros/**", "/prestamos/**").hasAnyRole("ADMIN", "LECTOR")
                 // URLs de usuarios solo para admins
-                .requestMatchers("/usuarios/**").hasRole("ADMIN")
+                .requestMatchers("/usuarios/**", "/categorias/**").hasRole("ADMIN")
                 // cualquier otra URL requiere estar autenticado
                 .anyRequest().authenticated()
         );
